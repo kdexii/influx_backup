@@ -18,6 +18,5 @@ def writeData(conn):
         data = f'testData,name={string} value={value}'
 
         conn.write_points(data,database='test3', protocol='line')
-    # print(conn)
 conn = connection()
 writeData(conn)

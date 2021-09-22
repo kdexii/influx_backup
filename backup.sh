@@ -1,18 +1,11 @@
 #!/bin/bash
 
-
 #   massive with database list
-arr=("test1" "test2" "test3")
 
-#   inactive function, but may come in handy
-function checkFolder {
-    if ! [ -d $directory ]; then #  check directory
-        echo 'Directory not found, create...'
-        mkdir $directory #  if not = create
-    else
-        echo 'folder is ready' #    or the folder exists
-    fi
-}
+arr=("test1" "test2" "test3");
+
+#   path to backup folder
+path='/var/tmp/'
 
 function makeBackUp {
 
@@ -20,23 +13,36 @@ function makeBackUp {
     
     while [ $x -lt 3 ]  #   default while count
     do
-        directory="/home/kdexii/tmp/${arr[$x]}"
+
+        : 'Does the folder exist, check'
+        
+        directory="$path${arr[$x]}"
         if ! [ -d $directory ]; then    #   check directory
             echo 'Directory not found, create...'
-            mkdir $directory # if not = create
+            echo $directory
+            mkdir $directory
+
             sleep 2s
         else
-            echo 'Directory found' # or the folder exists
-            sleep 2s
+            echo 'Directory found'
+            sleep 2s            
         fi
-        # echo "count: $x"
-            # echo ${arr[$x]}
+
+            : 'Backup of each database'
+
             echo 'Backup database: '${arr[$x]}
-            influxd backup -portable -database ${arr[$x]} $directory
+
+            outDate="$(date +"%d-%m-%Y_%H:%M")"
+
+            mkdir $directory'/'$outDate
+
+            newPath=$directory'/'$outDate
+            influxd backup -portable -database ${arr[$x]} $newPath
             x=$(( $x + 1 ))
             sleep 1s
     done
 }
-# checkFolder
+
+
 makeBackUp
 echo 'run time script(sec): '$SECONDS

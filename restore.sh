@@ -1,16 +1,26 @@
 #!/bin/bash
 
+#   folder from which we want to restore 
+path='/20-09-2021_10:46'
+#   list database
+arr=("test1" "test2" "test3")
+
+: 'Doing a restore from a folder'
+
+mainPath='/var/tmp/'
 function restoreBackUp {
-    arr=("test1" "test2" "test3")
     
     x=0
+
     while [ $x -lt 3 ]
     do
-        directory="/home/kdexii/tmp/${arr[$x]}"
-        # echo "count: $x"
-        # echo ${arr[$x]}
-        # influxd backup -portable -database ${arr[$x]} $directory
-        influxd restore -portable -db ${arr[$x]} -newdb ${arr[$x]} /home/kdexii/tmp/${arr[$x]}
+        directory="$mainPath${arr[$x]}"
+
+        newPath=$directory$path
+
+        echo $newPath
+
+        influxd restore -portable -db ${arr[$x]} $newPath
         x=$(( $x + 1 ))
 
     done
